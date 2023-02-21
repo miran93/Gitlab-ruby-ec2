@@ -1,0 +1,41 @@
+name: Ruby
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::282510063790:role/my-github-actions-role
+        aws-region: us-east-1
+    - name: Set up Ruby
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.0
+    - name: Install dependencies
+      run: bundle install
+    - name: Run tests
+      run: bundle exec rake
+
+    - name: Docker run
+      run: docker run --rm -v "$PWD":/var/task lambci/lambda:build-ruby2.5 bundle install --without test development --path vendor/bundle
+    - name: Delete cache 
+      run: sudo rm -r vendor/bundle/ruby/2.5.0/cache
+    - name: Zip
+      run: |
+        sudo apt-get update && sudo apt-get install -y zip && \
+        zip -9 -r lambda_function.zip lambda_function.rb vendor app config lib
+    - name: Upload
+      run: aws lambda update-function-code --function-name  arn:aws:lambda:us-east-1:442669662331:function:Lambda-Example --zip-file fileb://lambda_function.zip
