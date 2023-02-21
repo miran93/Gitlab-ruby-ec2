@@ -18,7 +18,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: arn:aws:iam::282510063790:role/my-github-actions-role
+        aws-access-key-id: AKIAUDRXJPCXOD346PX6
+        aws-secret-access-key: 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
         aws-region: us-east-1
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
