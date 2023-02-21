@@ -38,10 +38,5 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get install -y zip && \
         zip -9 -r lambda_function.zip lambda_function.rb vendor app config lib
-    - name: Deploy to AWS Lambda
-      uses: serverless/github-action@main
-      with:
-        args: deploy
-      env:
-          AWS_ACCESS_KEY_ID: AKIAUDRXJPCXOD346PX6
-          AWS_SECRET_ACCESS_KEY: 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
+    - name: Upload
+      run: aws lambda update-function-code --function-name  arn:aws:lambda:us-east-1:282510063790:function:RubyApplication --zip-file fileb://lambda_function.zip
