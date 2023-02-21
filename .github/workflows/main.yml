@@ -38,12 +38,12 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get install -y zip && \
         zip -9 -r lambda_function.zip lambda_function.rb vendor app config lib
-    - name: Upload
-      uses: serverless/github-action@master
-      with:
-          args: deploy
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          function_name: RubyApplication
-          zip_file: lambda_function.zip
+#    - name: Upload
+#      uses: serverless/github-action@master
+#      with:
+#          args: deploy
+#          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: us-east-1
+#          function_name: RubyApplication
+#          zip_file: lambda_function.zip
