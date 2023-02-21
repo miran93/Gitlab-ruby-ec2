@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-ruby '3.2.1'
+ruby '2.5.8'
 
 source 'http://rubygems.org'
 
