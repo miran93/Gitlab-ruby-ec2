@@ -39,7 +39,7 @@ jobs:
         sudo apt-get update && sudo apt-get install -y zip && \
         zip -9 -r lambda_function.zip lambda_function.rb vendor app config lib
     - name: Deploy to AWS Lambda
-      uses: serverless/github-action@master
+      uses: serverless/github-action@main
       with:
         args: deploy
       env:
