@@ -21,8 +21,11 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
+    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
+    # change this to (see https://github.com/ruby/setup-ruby#versioning):
+    # uses: ruby/setup-ruby@v1
     - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
       with:
         ruby-version: 2.5.8
     - name: Install dependencies
@@ -39,11 +42,4 @@ jobs:
         sudo apt-get update && sudo apt-get install -y zip && \
         zip -9 -r lambda_function.zip lambda_function.rb vendor app config lib
     - name: Upload
-      uses: serverless/github-action@master
-      with:
-          args: deploy
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          function_name: RubyApplication
-          zip_file: lambda_function.zip
+      run: aws lambda update-function-code --function-name  arn:aws:lambda:us-east-1:442669662331:function:Lambda-Example --zip-file fileb://lambda_function.zip
