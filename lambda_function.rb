@@ -1,7 +1,6 @@
-#Default handler for aws lambdas
-module Handler
-  def self.lambda_handler(event:, context:)
-   
-   p event
-  end
+require 'json'
+
+def lambda_handler(event:, context:)
+    # TODO implement
+    { statusCode: 200, body: JSON.generate('Hello from Lambda!') }
 end
