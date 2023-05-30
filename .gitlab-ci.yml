@@ -30,4 +30,4 @@ deploy_to_beanstalk:
     - aws elasticbeanstalk create-application-version --application-name $BEANSTALK_APP_NAME --version-label $CI_COMMIT_SHA --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=application.zip
     - aws elasticbeanstalk update-environment --environment-name $BEANSTALK_ENV_NAME --version-label $CI_COMMIT_SHA
   only:
-    - master
+    - main
