@@ -7,6 +7,8 @@ build:
   stage: build
   image: ruby:2.7
   script:
+    - apt-get update
+    - apt-get install zip -y
     - echo "Building your Ruby application"
     - gem install bundler
     - bundle install --deployment --without development test
