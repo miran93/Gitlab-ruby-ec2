@@ -4,27 +4,30 @@ stages:
 
 build:
   stage: build
-  image: ruby:2.7
+  image: ruby:latest
   script:
-    - apt-get update
-    - apt-get install zip -y
-    - echo "Building your Ruby application"
     - gem install bundler
-    - bundle install --deployment --without development test
-    - zip -r my-app.zip .
+    - bundle install
+    - bundle exec rake assets:precompile
+  artifacts:
+    paths:
+      - public/assets
 
-deploy:
+deploy_to_beanstalk:
   stage: deploy
+  image: ruby:latest
   script:
-    - apt-get update && apt-get install -y python3-pip
-    - pip3 install awsebcli --upgrade
-    - apt-get install -y unzip
-    - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    - unzip awscliv2.zip
-    - ./aws/install
+    - apt-get update -qy
+    - apt-get install -y zip
+    - gem install aws-sdk -v 3.0.1
+    - mkdir deploy
+    - zip -r deploy/application.zip .
     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-    - aws configure set region $AWS_REGION
-    - eb init -p ruby-2.7 my-app-name --region $AWS_REGION
-    - eb use RubyEB-env
-    - eb deploy
+    - aws configure set default.region $AWS_DEFAULT_REGION
+    - aws configure set default.output json
+    - aws s3 cp deploy/application.zip s3://$S3_BUCKET_NAME/application.zip
+    - aws elasticbeanstalk create-application-version --application-name $BEANSTALK_APP_NAME --version-label $CI_COMMIT_SHA --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=application.zip
+    - aws elasticbeanstalk update-environment --environment-name $BEANSTALK_ENV_NAME --version-label $CI_COMMIT_SHA
+  only:
+    - master
