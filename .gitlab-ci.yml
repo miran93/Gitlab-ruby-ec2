@@ -26,5 +26,5 @@ deploy:
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set region $AWS_REGION
     - eb init -p ruby-2.7 my-app-name --region $AWS_REGION
-    - eb use my-app-name
+    - eb use RubyEB-env
     - eb deploy
