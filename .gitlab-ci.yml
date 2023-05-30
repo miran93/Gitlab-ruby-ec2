@@ -8,7 +8,7 @@ build:
   script:
     - gem install bundler
     - bundle install --deployment --without development test
-    - bundle exec rake assets:precompile
+    - bundle exec rake
   artifacts:
     paths:
       - public/assets
