@@ -4,7 +4,7 @@ stages:
 
 build:
   stage: build
-  image: ruby:latest
+  image: ruby:2.7
   script:
     - gem install bundler
     - bundle install --deployment --without development test
