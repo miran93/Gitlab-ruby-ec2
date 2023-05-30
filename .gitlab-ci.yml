@@ -10,7 +10,7 @@ build:
     - echo "Building your Ruby application"
     - gem install bundler
     - bundle install --deployment --without development test
-    - bundle exec rake assets:precompile
+    - zip -r my-app.zip .
 
 test:
   stage: test
