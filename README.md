@@ -1,1 +1,1 @@
-# GithubAction_Ruby_Lambda
+Ruby-Gitlab-ElasticBeanstalk
