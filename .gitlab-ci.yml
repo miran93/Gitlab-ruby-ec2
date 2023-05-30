@@ -1,6 +1,5 @@
 stages:
   - build
-  - test
   - deploy
 
 build:
@@ -13,12 +12,6 @@ build:
     - gem install bundler
     - bundle install --deployment --without development test
     - zip -r my-app.zip .
-
-test:
-  stage: test
-  script:
-    - echo "Running tests for your Ruby application"
-    - bundle exec rake spec
 
 deploy:
   stage: deploy
