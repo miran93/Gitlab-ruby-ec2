@@ -1,5 +1,6 @@
-require 'rake/testtask'
-task default: "test"
-Rake::TestTask.new do |task|
-  task.pattern = 'test/*_test.rb'
+namespace :assets do
+  desc 'Precompile assets'
+  task :precompile do
+    # Task implementation here
+  end
 end
