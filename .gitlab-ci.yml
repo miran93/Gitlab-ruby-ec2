@@ -28,7 +28,7 @@ deploy:
     - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts
     - chmod 400 $id_rsa
   script:
-    - scp -r -i $id_rsa . $EC2_USER@$EC2_HOST:/var/www/my_app
+    - scp -r -i $id_rsa public/assets $EC2_USER@$EC2_HOST:/var/www/my_app
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle install --deployment --without development test'
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle exec rake db:migrate'
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle exec unicorn -c config/unicorn.rb -D'
