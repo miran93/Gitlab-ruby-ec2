@@ -20,7 +20,7 @@ deploy_job:
   before_script:
     - apt-get update && apt-get install -y openssh-client
   script:
-    - echo "$EC2_PEM_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "$SSH_USER"@"$EC2_PUBLIC_IP" "cd /var/www/my_app && git pull"
+    - echo "$EC2_PEM_KEY" > ~/.ssh/$id_rsa
+    - chmod 600 ~/.ssh/$id_rsa
+    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/$id_rsa "$SSH_USER"@"$EC2_PUBLIC_IP" "cd /var/www/my_app && git pull"
 
