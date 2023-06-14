@@ -1,5 +1,6 @@
 stages:
   - build
+  - package
   - deploy
 
 build_job:
@@ -10,9 +11,19 @@ build_job:
     - bundle install --jobs "$(nproc)" --retry 3
   script:
     - bundle exec rake assets:precompile
+
+package:
+  stage: package
+  image: ubuntu:latest
+  before_script:
+    - apt-get update
+    - apt-get install zip -y
+  script:
+    - zip -r $CI_PROJECT_NAME.zip *
+
   artifacts:
     paths:
-      - public/assets/
+      - $CI_PROJECT_NAME.zip
 
 deploy:
   stage: deploy
@@ -28,7 +39,7 @@ deploy:
     - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts
     - chmod 400 $id_rsa
   script:
-    - scp -r -i $id_rsa public/assets $EC2_USER@$EC2_HOST:/home/$EC2_USER/
+    - scp -r -i $id_rsa $CI_PROJECT_NAME.zip $EC2_USER@$EC2_HOST:/home/$EC2_USER/
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /home/$EC2_USER/ && bundle install --deployment --without development test'
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /home/$EC2_USER/ && bundle exec rake db:migrate'
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /home/$EC2_USER/ && bundle exec unicorn -c config/unicorn.rb -D'
