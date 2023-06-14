@@ -2,33 +2,25 @@ stages:
   - build
   - deploy
 
-build:
+build_job:
   stage: build
   image: ruby:2.7
-  script:
+  before_script:
     - gem install bundler
-    - bundle install --deployment --without development test
-    - bundle exec rake
+    - bundle install --jobs "$(nproc)" --retry 3
+  script:
+    - bundle exec rake assets:precompile
   artifacts:
     paths:
-      - public/assets
+      - public/assets/
 
-deploy_to_beanstalk:
+deploy_job:
   stage: deploy
-  image: ruby:latest
+  image: ruby:2.7
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
   script:
-    - apt-get update -qy
-    - apt-get install -y zip
-    - gem install aws-sdk -v 3.0.1
-    - mkdir deploy
-    - zip -r deploy/application.zip .
-    - apt-get install -y awscli
-    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-    - aws configure set default.region $AWS_DEFAULT_REGION
-    - aws configure set default.output json
-    - aws s3 cp deploy/application.zip s3://$S3_BUCKET_NAME/application.zip
-    - aws elasticbeanstalk create-application-version --application-name $BEANSTALK_APP_NAME --version-label $CI_COMMIT_SHA --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=application.zip
-    - aws elasticbeanstalk update-environment --environment-name $BEANSTALK_ENV_NAME --version-label $CI_COMMIT_SHA
-  only:
-    - main
+    - echo "$EC2_PEM_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "$SSH_USER"@"$EC2_PUBLIC_IP" "cd /var/www/my_app && git pull"
+
