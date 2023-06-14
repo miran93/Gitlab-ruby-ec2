@@ -23,8 +23,8 @@ deploy:
     - apt-get update -yq
     - apt-get install -yq openssh-client
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/$id_rsa
-    - chmod 600 ~/.ssh/$id_rsa
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts
   script:
     - scp -r . $EC2_USER@$EC2_HOST:/var/www/my_app
