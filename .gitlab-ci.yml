@@ -26,10 +26,11 @@ deploy:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan $EC2_HOST >> ~/.ssh/known_hosts
+    - chmod 400 $id_rsa
   script:
-    - scp -r . $EC2_USER@$EC2_HOST:/var/www/my_app
-    - ssh $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle install --deployment --without development test'
-    - ssh $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle exec rake db:migrate'
-    - ssh $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle exec unicorn -c config/unicorn.rb -D'
+    - scp -r -i $id_rsa . $EC2_USER@$EC2_HOST:/var/www/my_app
+    - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle install --deployment --without development test'
+    - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle exec rake db:migrate'
+    - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /var/www/my_app && bundle exec unicorn -c config/unicorn.rb -D'
 
 
