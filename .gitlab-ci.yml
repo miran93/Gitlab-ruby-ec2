@@ -41,7 +41,6 @@ deploy:
     - chmod 400 $id_rsa
   script:
     - scp -r -i $id_rsa $CI_PROJECT_NAME.zip $EC2_USER@$EC2_HOST:/home/$EC2_USER/
-    - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /home/$EC2_USER/ && bundle install --deployment --without development test'
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /home/$EC2_USER/ && bundle exec rake db:migrate'
     - ssh -i $id_rsa $EC2_USER@$EC2_HOST 'cd /home/$EC2_USER/ && bundle exec unicorn -c config/unicorn.rb -D'
 
