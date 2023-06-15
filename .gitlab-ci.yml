@@ -10,6 +10,7 @@ build_job:
     - gem install bundler
     - bundle install --jobs "$(nproc)" --retry 3
   script:
+    - bundle install --deployment --without development test
     - bundle exec rake assets:precompile
 
 package:
